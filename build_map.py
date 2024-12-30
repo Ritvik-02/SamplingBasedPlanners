@@ -32,22 +32,22 @@ def get_random_map():
     choice = np.random.choice(shapes, NUM_OBS)
     for shape in choice:
         if shape == "circle":
-            x = np.random.randint(-GRID_SIZE, GRID_SIZE)
-            y = np.random.randint(-GRID_SIZE, GRID_SIZE)
+            x = np.random.randint(-GRID_SIZE+5, GRID_SIZE-5)
+            y = np.random.randint(-GRID_SIZE+5, GRID_SIZE-5)
             r = round(np.random.uniform(1,5),1)
             obstacles.append(build_circle([x,y],r))
         
         elif shape == "oval":
-            x = np.random.randint(-GRID_SIZE, GRID_SIZE)
-            y = np.random.randint(-GRID_SIZE, GRID_SIZE)
+            x = np.random.randint(-GRID_SIZE+5, GRID_SIZE-5)
+            y = np.random.randint(-GRID_SIZE+5, GRID_SIZE-5)
             w = round(np.random.uniform(0,6),1)
             h = round(np.random.uniform(0,6),1)
             a = np.random.randint(0, 90)
             obstacles.append(build_oval([x,y],w,h,a))
         
         elif shape == "rectangle":
-            x = np.random.randint(-GRID_SIZE, GRID_SIZE)
-            y = np.random.randint(-GRID_SIZE, GRID_SIZE)
+            x = np.random.randint(-GRID_SIZE+5, GRID_SIZE-5)
+            y = np.random.randint(-GRID_SIZE+5, GRID_SIZE-5)
             w = round(np.random.uniform(1,4),1)
             h = round(np.random.uniform(1,7),1)
             a = np.random.randint(0, 90)

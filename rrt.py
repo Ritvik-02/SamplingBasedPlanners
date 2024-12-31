@@ -9,6 +9,7 @@ from build_map import get_random_map
 
 GRID_SIZE = 20
 GOAL_BIAS = 0.1
+STEP_SIZE = 5
 GOAL_POINT = [GRID_SIZE,GRID_SIZE]
 
 def sample_point():
@@ -17,12 +18,12 @@ def sample_point():
     while True:
         sample = [np.random.uniform(-GRID_SIZE,GRID_SIZE), np.random.uniform(-GRID_SIZE,GRID_SIZE)]
         p = Point(sample[0], sample[1])
-        flag = True
+        collide = False
         for obs in obstacles:
             if p.intersects(obs):
-                flag = False
+                collide = True
                 break
-        if flag:
+        if not collide:
             return sample
 
 def find_nearest(points, newpoint):
@@ -31,7 +32,12 @@ def find_nearest(points, newpoint):
         d = np.sqrt((p[0] - newpoint[0])**2 + (p[1] - newpoint[1])**2)
         dists.append(d)
     dists = np.array(dists)
-    return np.argmin(dists)
+    i = np.argmin(dists)
+    theta = np.arctan2(newpoint[1]-points[i][1], newpoint[0]-points[i][0])
+    newx = points[i][0] + STEP_SIZE*np.cos(theta)
+    newy = points[i][1] + STEP_SIZE*np.sin(theta)
+    
+    return i, [newx, newy]
 
 # get map
 obstacles = get_random_map()
@@ -51,11 +57,18 @@ for obs in obstacles:
 
 lines = []
 
-newpoint = sample_point()
-i = find_nearest(points, newpoint)
-l = LineString([Point(points[i][0],points[i][1]), Point(newpoint[0],newpoint[1])])
-lines.append(l)
-points.append(newpoint)
+for i in range(10):
+    newpoint = sample_point()
+    i, addpoint = find_nearest(points, newpoint)
+    l = LineString([Point(points[i][0],points[i][1]), Point(addpoint[0],addpoint[1])])
+    collide = False
+    for obs in obstacles:
+        if l.intersects(obs):
+            collide = True
+            break
+    if not collide:
+        lines.append(l)
+        points.append(addpoint)
 
 # plot lines
 for l in lines:

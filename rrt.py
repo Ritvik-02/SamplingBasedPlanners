@@ -44,6 +44,7 @@ obstacles = get_random_map()
 
 points = [[-GRID_SIZE,-GRID_SIZE]]
 
+plt.ion()
 fig,axs = plt.subplots(1,1,figsize=(8,8))
 axs.set_ylim(-GRID_SIZE,GRID_SIZE)
 axs.set_xlim(-GRID_SIZE,GRID_SIZE)
@@ -71,6 +72,13 @@ while True:
         d = np.sqrt((GOAL_POINT[0] - addpoint[0])**2 + (GOAL_POINT[1] - addpoint[1])**2)
         if d <= STEP_SIZE:
             break
+        if count % 5 == 0:
+            for (l,i,c) in lines:
+                shapely.plotting.plot_line(l, axs, color='black', add_points=False)
+            temp = np.array(points)
+            axs.scatter(temp[:,0], temp[:,1], color='blue')
+            plt.draw()
+            plt.pause(0.5)
 
 points.append(GOAL_POINT)
 count += 1
@@ -91,6 +99,7 @@ ret = sovle_map2(points, adj)
 for (l,i,c) in lines:
     shapely.plotting.plot_line(l, axs, color='black', add_points=False)
 
+plt.pause(0.5)
 pathLines = []
 for i in range(1,len(ret)):
     l = LineString([Point(points[ret[i]][0],points[ret[i]][1]), Point(points[ret[i-1]][0],points[ret[i-1]][1])])
@@ -100,8 +109,8 @@ for l in pathLines:
 
 # plot points
 points = np.array(points)
-axs.scatter(points[:,0], points[:,1])
-
+axs.scatter(points[:,0], points[:,1], color='blue')
+plt.ioff()
 plt.show()
 
 
